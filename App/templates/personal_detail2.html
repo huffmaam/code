@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ user.Username }} - 个人信息</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            color: #fff;
+            padding: 10px;
+            background-color: #4285f4;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        section {
+            padding: 20px;
+            margin: auto;
+            max-width: 600px;
+        }
+
+        h1, h2 {
+            color: #4285f4;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-item {
+
+        {#padding: 10px;#}{#margin-bottom: 10px;#}{#border-radius: 5px;#} box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            background-color: #fff;
+        }
+
+        td {
+
+
+        }
+
+        #deleteBlog {
+            background-color: #e02c2c
+        }
+
+    </style>
+
+    <script>
+
+        {#function updateUserBio(bio) {#}
+        {#    // 在这里可以使用传递过来的用户名进行操作#}
+        {#    var newUsername = window.prompt('请输入新的简介:', '{{ user.Bio }}');#}
+        {##}
+        {#    // 这里可以调用弹窗或者其他JavaScript操作#}
+        {#}#}
+        {##}
+        {#function updateUserName(username) {#}
+        {#    // 在这里可以使用传递过来的用户名进行操作#}
+        {#    var newUsername = window.prompt('请输入新的用户名:', '{{ user.Username }}');#}
+        {##}
+        {#    // 这里可以调用弹窗或者其他JavaScript操作#}
+        {#}#}
+        {##}
+        {##}
+        {#function updateUserInformation() {#}
+        {#    // 使用 window.prompt 创建弹窗输入新的用户名#}
+        {#    var newUsername = window.prompt('请输入新的用户名:', '{{ user.Username }}');#}
+        {##}
+        {#    // 使用 window.prompt 创建弹窗输入新的邮箱#}
+        {#    var newEmail = window.prompt('请输入新的邮箱:', '{{ user.Email }}');#}
+        {##}
+        {#    // 使用 window.confirm 创建弹窗输入新的密码#}
+        {#    var newPassword = null;#}
+        {#    var newPasswordConfirmation = null;#}
+        {##}
+        {#    if (window.confirm('是否修改密码？')) {#}
+        {#        newPassword = window.prompt('请输入新的密码:');#}
+        {#        newPasswordConfirmation = window.prompt('请确认新密码:');#}
+        {#    }#}
+        {##}
+        {#    // 在这里可以通过 Ajax 请求将新的用户信息提交到后端进行更新#}
+        {#    // ...#}
+        {##}
+        {#    // 输出更新后的信息#}
+        {#    alert('更新后的信息：\n用户名: ' + newUsername + '\n邮箱: ' + newEmail + '\n密码: ' + (newPassword ? '******' : '未修改'));#}
+        {#}#}
+
+
+        function editUserBio() {
+            // 获取用户简介容器
+            var bioContainer = document.getElementById('bio-container');
+
+            // 获取用户简介内容
+            var bioContent = bioContainer.innerHTML.trim();
+
+            // 创建文本输入框
+            var bioInput = document.createElement('textarea');
+            bioInput.value = bioContent;
+
+            // 创建提交按钮
+            var submitButton = document.createElement('button');
+            submitButton.innerHTML = '提交';
+            submitButton.onclick = function () {
+                // 获取用户输入的新简介
+                var newBio = bioInput.value;
+
+                // 在这里可以使用JavaScript将新简介发送到服务器进行保存
+                console.log('New Bio:', newBio);
+
+                // 更新用户简介容器内容为新简介
+                bioContainer.innerHTML = newBio;
+            };
+
+            // 清空用户简介容器内容
+            bioContainer.innerHTML = '';
+
+            // 将文本输入框添加到用户简介容器
+            bioContainer.appendChild(bioInput);
+
+            // 将提交按钮添加到用户简介容器
+            bioContainer.appendChild(submitButton);
+        }
+    </script>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="{{ url_for('index') }}">返回首页</a>
+
+    </nav>
+</header>
+
+<section>
+    <form action="{{ url_for('logout') }}" method="post">
+        <button type="submit">退出登录</button>
+    </form>
+    <h1>个人信息</h1>
+    <div>
+        <img src="{{ url_for('static', filename=user.Avatar) }}" alt="User Avatar">
+
+        <p>
+            用户名: {{ user.Username }}
+
+            {#             <button onclick="updateUserName('{{ user.Username }}')">修改</button>#}
+        </p>
+        <p>Email: {{ user.Email }}</p>
+        <p>注册时间: {{ user.RegistrationTime }}</p>
+
+        <h3>个人简介</h3>
+        <p id="bio-container">
+            {{ user.Bio }}
+            <button onclick="editUserBio()">修改</button>
+        </p>
+        <!-- 添加修改信息按钮 -->
+        {#        <button onclick="updateUserInformation()">修改信息</button>#}
+
+        {#            <form action="{{ url_for('update_user', user_id=user.UserID) }}" method="post">#}
+        {#                <label for="new_username">新用户名:</label>#}
+        {#                <input type="text" id="new_username" name="new_username" value="{{ user.Username }}" required>#}
+        {##}
+        {#                <button type="submit">保存修改</button>#}
+        {#            </form>#}
+    </div>
+    <br>
+    <hr>
+    <br>
+
+    <h3>我的博客</h3>
+    <ul>
+        <table width=100%>
+            {% for blog in per_blogs %}
+                <tr class="comment-item">
+                    <td>
+                        {#                        <li class="comment-item">#}
+                        <h3><a href="{{ url_for('blog_detail', blog_id=blog.BlogID) }}">&nbsp;&nbsp;{{ blog.Title }}</a>
+                        </h3>
+                        <p>&nbsp;{{ blog.Content }}</p>
+                        {#                        </li>#}
+                    </td>
+                    <td>
+                        <form action="{{ url_for('delete_blog', user_id=user.UserID, blog_id=blog.BlogID) }}"
+                              method="post">
+                            <button type="submit" id="deleteBlog">删除博客</button>
+                        </form>
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </ul>
+
+
+</section>
+
+<footer>
+    <!-- Add your footer content here -->
+</footer>
+</body>
+</html>

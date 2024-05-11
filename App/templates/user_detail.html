@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ user.Username }} - 个人信息</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            color: #fff;
+            padding: 10px;
+            background-color: #4285f4;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        section {
+            padding: 20px;
+            margin: auto;
+            max-width: 600px;
+        }
+
+        h2 {
+            color: #4285f4;
+        }
+
+        img {
+            max-width: 60%;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-item {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #alsoFollowButton {
+            background-color: #4f4c4c
+        }
+
+        #unFollowButton {
+            background-color: #4285f4
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="{{ url_for('index') }}">返回首页</a>
+    </nav>
+</header>
+
+<section>
+    {#    如果这个人是自己#}
+    {% if current_user.UserID != user.UserID %}
+
+        {% if follower and followed %}
+            <form action="{{ url_for('unfollow2', user_id=current_user.UserID, unfollow_id=user.UserID) }}"
+                  method="post">
+                <button id="alsoFollowButton" type="submit">已关注</button>
+            </form>
+
+        {% elif follower %}
+            <form action="{{ url_for('unfollow2', user_id=current_user.UserID, unfollow_id=user.UserID) }}"
+                  method="post">
+                <button id="alsoFollowButton" type="submit">已关注</button>
+            </form>
+
+        {% elif followed %}
+            <form action="{{ url_for('follow2', user_id=current_user.UserID, follow_id=user.UserID) }}"
+                  method="post">
+                <button id="unFollowButton" type="submit" id="addFollowButton">+关注</button>
+            </form>
+
+        {% else %}
+            <form action="{{ url_for('follow2', user_id=current_user.UserID, follow_id=user.UserID) }}"
+                  method="post">
+                <button id="unFollowButton" type="submit" id="addFollowButton">+关注</button>
+            </form>
+
+        {% endif %}
+    {% endif %}
+
+
+    {#    {% for follower in followers %}#}
+    {##}
+    {#        {% set mutual_follow = follower in following %}#}
+    {##}
+    {# 显示相应的按钮 #}
+    {#        {% if mutual_follow %}#}
+    {#            <form action="{{ url_for('unfollow', user_id=user.UserID, unfollow_id=follower.UserID) }}"#}
+    {#                  method="post">#}
+    {#                <button type="submit">相互关注</button>#}
+    {#            </form>#}
+    {#        {% else %}#}
+    {#            <form action="{{ url_for('follow', user_id=user.UserID, follow_id=follower.UserID) }}"#}
+    {#                  method="post">#}
+    {#                <button type="submit" id="addFollowButton">+关注</button>#}
+    {#            </form>#}
+    {#        {% endif %}#}
+    {#    {% endfor %}#}
+
+    <h2>个人信息</h2>
+
+    <div>
+        <img src="{{ url_for('static', filename=user.Avatar) }}" alt="User Avatar">
+
+        <p>用户名: {{ user.Username }}</p>
+        <p>Email: {{ user.Email }}</p>
+        <p>注册时间: {{ user.RegistrationTime }}</p>
+
+        <h3>个人简介</h3>
+        <p>{{ user.Bio }}</p>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+
+    <h3>他的博客</h3>
+    <ul>
+        {% for blog in per_blogs %}
+            <li class="comment-item">
+                <h3><a href="{{ url_for('blog_detail', blog_id=blog.BlogID) }}">{{ blog.Title }}</a></h3>
+                <p>{{ blog.Content }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+
+
+</section>
+
+<footer>
+    <!-- Add your footer content here -->
+</footer>
+</body>
+</html>

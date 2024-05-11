@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Add your head content here -->
+    <title>{{ blog.Title }} - 博客详情</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            color: #fff;
+            padding: 10px;
+            background-color: #4285f4;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        article {
+            background-color: #f1e6e6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .comments-section {
+            margin-top: 20px;
+        }
+
+        .comment-item {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .like-button {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: url("../static/imgs/{{ 'likesafter_logo.png' if existing_like else 'likespre_logo.png' }}") no-repeat center center;
+            background-size: cover;
+            cursor: pointer;
+        }
+
+        .like-button.liked {
+            background: url("../static/imgs/{{ 'likespre_logo.png' if existing_like else 'likesafter_logo.png' }}") no-repeat center center;
+            background-size: cover;
+        }
+
+        .like-count {
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .areaSize {
+            margin: 160px;
+            margin-top: 20px;
+            /* 根据需要调整上边距 */
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <!-- Add your header content here -->
+    <nav>
+        <a href="{{ url_for('index') }}">返回首页</a>
+    </nav>
+</header>
+<div class="areaSize">
+    <section>
+        <article>
+            <h2>{{ blog.Title }}</h2>
+            <a href="{{ url_for('user_detail',user_id=author.UserID) }}">
+                <h3>作者：{{ author.Username }}</h3>
+            </a>
+            <p>{{ blog.Content }}</p>
+            <p>
+
+                    <span class="like-button" id="likeButton" role="button" tabindex="0"
+                          onclick="toggleLike(this, {{ blog.BlogID }})">
+                    </span>
+
+                <span class="like-count" id="likeCount">{{ blog.LikesCount }}</span>&nbsp;&nbsp;&nbsp;
+                发布时间：<span>{{ blog.PublishTime }}</span>
+            </p>
+        </article>
+
+        <!-- 显示博客评论 -->
+        <div class="comments-section">
+            <h2>评论</h2>
+            <ul class="comments-list">
+                {% for comment in comments %}
+                    <li class="comment-item">
+                        <a href="{{ url_for('user_detail',user_id=comment[2]) }}">
+                            <h3>评论人：{{ comment[3] }}</h3>
+                        </a>
+                        <p>{{ comment[0] }}</p>
+                        <p>评论时间: {{ comment[1] }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- 添加评论表单 -->
+        <form action="{{ url_for('add_comment', blog_id=blog.BlogID) }}" method="post">
+            <label for="comment">添加评论:</label>
+            <textarea name="comment" id="comment" required></textarea>
+            <button type="submit">提交评论</button>
+        </form>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 仲恺农业工程学院 &nbsp;&nbsp;&nbsp;2023&nbsp;&nbsp;&nbsp; 博客系统.&nbsp;&nbsp;&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+    function toggleLike(element, blogId) {
+        // 使用 fetch API 发送 POST 请求到 /like_blog/<blogId>
+        fetch(`/like_blog/${blogId}`, {
+            method: 'POST',
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 成功接收到响应后更新点赞数显示
+                element.classList.toggle("liked");
+                document.getElementById('likeCount').innerText = data.likes_count;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>
+
+</body>
+
+</html>

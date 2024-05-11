@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>搜索结果</title>
+    <!-- Add your styles and scripts here -->
+    <link rel="stylesheet" href="../static/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+
+            color: #fff;
+            padding: 10px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+        }
+
+        #header_title {
+            flex-grow: 1;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0e171f;
+        }
+
+        nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #fff;
+            transition: background-color 0.3s; /* 添加过渡效果 */
+        }
+
+
+        section {
+            padding: 20px;
+        }
+
+        article {
+            background-color: #f1e6e6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #header_title {
+            text-align: left;
+            color: #fafafa;
+        }
+
+        .blog_title_a {
+            font-size: 20px; /* 适当的字体大小 */
+            color: #463434;
+            font-weight: bold; /* 适当的字体粗细 */
+            font-family: 'Arial', sans-serif; /* 适当的字体族 */
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .LikesCountFont {
+            font-size: 15px; /* 适当的字体大小 */
+        }
+
+        .areaSize {
+            margin: 160px;
+            margin-top: 20px; /* 根据需要调整上边距 */
+        }
+
+        /* 创建一个 Flex 容器，并确保子元素在交叉轴上具有相同的高度 */
+        .image-container {
+            display: flex;
+            align-items: stretch;
+        }
+
+        /* 设置图片宽度为50%，以在同一行显示 */
+        .image-container img {
+            width: 50%;
+            height: 120px;
+        }
+
+        nav a:hover {
+            background-color: #4fa6ee; /* 鼠标悬停时的背景颜色 */
+        }
+
+        /* 刷新按钮样式 */
+        button.refresh-btn {
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 auto; /* 设置左右外边距为自动，使其居中 */
+            display: block; /* 将按钮转换为块级元素，以撑满父容器的宽度 */
+        }
+
+        /* 分页样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            background-color: #fff;
+        }
+
+        .pagination .current {
+            background-color: #4285f4;
+            color: #fff;
+            border: 1px solid #4285f4;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        h2, h3 {
+            color: #2d5fe1;
+        }
+
+        .comment-item {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            text-align: center;
+            font-size: 18px;
+        }
+
+
+    </style>
+</head>
+<body>
+<header>
+    <div class="image-container">
+        <img src="../static/imgs/first_zk1.jpg" id="first_zk" alt="first_zk">
+        <img src="../static/imgs/first_zk2.jpg" id="first_zk" alt="first_zk">
+    </div>
+    <nav>
+        <img src="../static/imgs/blog.jpg" alt="blog logo" width="70" height="40">
+        <a href="{{ url_for('index') }}">首页</a> |
+        <a href="{{ url_for('hot_blogs') }}">热门博客</a> |
+        <a href="{{ url_for('latest_blogs') }}">最新博客</a> |
+        <a href="{{ url_for('search_results', user_id=user_id) }}">搜索</a> |
+        <a href="{{ url_for('follow_list', user_id=user_id) }}">关注列表</a> |
+        <a href="{{ url_for('publish_blog', user_id=user_id) }}">发布博客</a> |
+
+        <a href="{{ url_for('personal_detail', user_id=user_id) }}">我的</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </nav>
+</header>
+
+<div class="areaSize">
+    <section>
+        <h2>搜索博客</h2>
+        <form action="{{ url_for('search_results', user_id=user_id) }}" method="get">
+            <label for="username">搜索作者:</label>
+            <input type="text" id="username" name="username">
+
+            <label for="title">搜索标题:</label>
+            <input type="text" id="title" name="title">
+
+            <label for="content">搜索内容:</label>
+            <input type="text" id="content" name="content">
+
+            <button type="submit">搜索</button>
+        </form>
+
+        <!-- 显示搜索结果的部分 -->
+        {% if results.items %}
+            <h3>搜索结果</h3>
+            <ul>
+                {% for blog in results.items %}
+                    <li class="comment-item">
+                        <h3><a href="{{ url_for('blog_detail', blog_id=blog.BlogID) }}">{{ blog.Title }}</a></h3>
+                        <p>{{ blog.Content }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+            <!-- 分页链接 -->
+{#            <div class="pagination">#}
+{#                {{ results.prev() }}#}
+{#                {% for num in results.iter_pages() %}#}
+{#                    {% if num %}#}
+{#                        {% if results.page == num %}#}
+{#                            <span class="current">{{ num }}</span>#}
+{#                        {% else %}#}
+{#                            <a href="{{ url_for('search_results', user_id=user_id, username=request.args.get('username'), title=request.args.get('title'), content=request.args.get('content'), page=num) }}">{{ num }}</a>#}
+{#                        {% endif %}#}
+{#                    {% else %}#}
+{#                        <span>...</span>#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
+{#                {{ results.next() }}#}
+{#            </div>#}
+
+            <!-- 分页显示 -->
+            <div class="pagination">
+                {% if results.prev() %}
+                    <a href="{{ url_for('search_results', user_id=user_id, username=request.args.get('username'), title=request.args.get('title'), content=request.args.get('content'),page=results.prev()) }}">上一页</a>
+                {% endif %}
+                {% for num in results.iter_pages() %}
+                    {% if num|string == 'None' %}
+                        <span>...</span>
+                    {% elif num == results.page %}
+                        <span class="current">{{ num }}</span>
+                    {% else %}
+                        <a href="{{ url_for('search_results', user_id=user_id, username=request.args.get('username'), title=request.args.get('title'), content=request.args.get('content'), page=num) }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if results.has_next %}
+                    <a href="{{ url_for('search_results', user_id=user_id, username=request.args.get('username'), title=request.args.get('title'), content=request.args.get('content'),page=results.next_num) }}">下一页</a>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <p>无搜索结果</p>
+        {% endif %}
+    </section>
+
+</div>
+
+<footer>
+    <p>&copy; 仲恺农业工程学院 &nbsp;&nbsp;&nbsp;2023&nbsp;&nbsp;&nbsp; 博客系统.&nbsp;&nbsp;&nbsp; All rights reserved.</p>
+</footer>
+
+<!-- Add your additional scripts here -->
+</body>
+</html>

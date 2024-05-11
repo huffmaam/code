@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ user.Username }} - 个人信息</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            color: #fff;
+            padding: 10px;
+            background-color: #4285f4;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        section {
+            padding: 20px;
+            margin: auto;
+            max-width: 600px;
+        }
+
+        h1, h2 {
+            color: #4285f4;
+        }
+
+        img {
+            max-width: 60%;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-item {
+
+        {#padding: 10px;#}{#margin-bottom: 10px;#}{#border-radius: 5px;#} box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            background-color: #fff;
+        }
+
+        td {
+
+
+        }
+
+        #deleteBlog {
+            background-color: #e02c2c
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-size: 15px;
+        }
+
+        #new_bio_text {
+            text-align: left;
+        }
+
+    </style>
+
+    <script>
+        function editUserInfo() {
+            // 隐藏原始内容
+            document.getElementById('editInfoForm').style.display = 'block';
+        }
+
+        function submitEditInfo() {
+            // 获取用户输入的新信息
+            var newUsername = document.getElementById('new_username').value;
+
+            var newEmail = document.getElementById('new_email').value;
+            var newPassword = document.getElementById('new_password').value;
+            var newBio = document.getElementById('new_bio').value;
+
+            // 发送新信息到服务器
+            var userId = {{ user.UserID }};
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/update_user/' + userId, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            var data = 'new_username=' + encodeURIComponent(newUsername) +
+                '&new_email=' + encodeURIComponent(newEmail) +
+                '&new_password=' + encodeURIComponent(newPassword) +
+                '&new_bio=' + encodeURIComponent(newBio);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // 隐藏表单
+                    document.getElementById('editInfoForm').style.display = 'none';
+                   
+                    location.reload();
+                }
+            };
+            xhr.send(data);
+        }
+    </script>
+
+</head>
+<body>
+<header>
+    <nav>
+        <a href="{{ url_for('index') }}">返回首页</a>
+
+    </nav>
+</header>
+
+<section>
+    <form action="{{ url_for('logout') }}" method="post">
+        <button type="submit">退出登录</button>
+    </form>
+    <h1>个人信息</h1>
+    <div>
+        <img src="{{ url_for('static', filename=user.Avatar) }}" alt="User Avatar">
+
+        <p>
+            用户名: {{ user.Username }}
+
+        </p>
+        <p>Email: {{ user.Email }}</p>
+        <p>注册时间: {{ user.RegistrationTime }}</p>
+
+        <h3>个人简介
+            <button onclick="editUserInfo()">修改</button>
+        </h3>
+        <p id="bio-container">
+            {{ user.Bio }}
+        </p>
+
+
+        <!-- 修改个人信息的表单 -->
+        <form id="editInfoForm" style="display: none;" method="POST"
+              action="{{ url_for('update_user',user_id=user.UserID) }}">
+            <label for="new_bio" id="new_bio_text"><b>新简介:</b></label>
+            <textarea id="new_bio" name="new_bio">{{ user.Bio }}</textarea>
+            <button type="submit">提交</button>
+        </form>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+
+    <h3>我的博客</h3>
+    <ul>
+        <table width=100%>
+            {% for blog in per_blogs %}
+                <tr class="comment-item">
+                    <td>          
+                        <h3>
+                            <a href="{{ url_for('blog_detail', blog_id=blog.BlogID) }}">&nbsp;&nbsp;{{ blog.Title }}</a>
+                        </h3>
+                        <p>&nbsp;{{ blog.Content }}</p>                  
+                    </td>
+                    <td>
+                        <form action="{{ url_for('delete_blog', user_id=user.UserID, blog_id=blog.BlogID) }}"
+                              method="post">
+                            <button type="submit" id="deleteBlog">删除博客</button>
+                        </form>
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </ul>
+
+
+</section>
+
+<footer>
+    <!-- Add your footer content here -->
+</footer>
+</body>
+</html>

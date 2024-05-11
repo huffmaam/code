@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>关注列表</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            color: #fff;
+            padding: 10px;
+
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #2d5fe1;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+
+        img.follow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        a {
+            text-decoration: none;
+            color: #4285f4;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #4285f4;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #4fa6ee;
+        }
+
+        .buttonOfFollow {
+            width: 70px;
+            height: 40px;
+        }
+
+        table {
+            text-align: center;
+            margin: 10px;
+            width: 80%;
+            border-collapse: collapse;
+
+
+        }
+
+        td {
+            width: 350px;
+            height: 60px;
+            border: 1px solid #ccc8c8;
+            font-size: 20px;
+        {#overflow: hidden; /* 隐藏溢出部分 */#}{#white-space: nowrap; /* 不换行 */#}{#text-overflow: ellipsis; /* 显示省略号 */#}
+        }
+
+        section {
+            display: flex;
+        }
+
+        div {
+            box-sizing: border-box;
+        {#height: 100px;#}
+        }
+
+        .left-div, .right-div {
+            flex: 1; /* 将可用空间平均分给两个 div */
+        }
+
+        .left-div {
+        {#text-align: center;#}
+        }
+
+        .right-div {
+        {#background-color: #66ccff;#}
+        }
+
+        #addFollowButton {
+            background-color: #f31e4c;
+        }
+
+    </style>
+</head>
+
+<body>
+<header>
+
+    <div class="image-container">
+        <img src="../static/imgs/first_zk1.jpg" id="first_zk" alt="first_zk">
+        <img src="../static/imgs/first_zk2.jpg" id="first_zk" alt="first_zk">
+    </div>
+
+    {#        <span id="header_title">社交博客</span>#}
+    <nav>
+        <img src="../static/imgs/blog.jpg" alt="blog logo" width="70" height="40">
+        <a href="{{ url_for('index') }}">首页</a> |
+        <a href="{{ url_for('hot_blogs') }}">热门博客</a> |
+        <a href="{{ url_for('latest_blogs') }}">最新博客</a> |
+        <a href="{{ url_for('search_results', user_id=user_id) }}">搜索</a> |
+        <a href="{{ url_for('follow_list', user_id=user_id) }}">关注列表</a> |
+        <a href="{{ url_for('publish_blog', user_id=user_id) }}">发布博客</a> |
+
+        <a href="{{ url_for('personal_detail', user_id=user_id) }}">我的</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </nav>
+
+</header>
+
+<section>
+
+    <div class="left-div">
+
+        <h1>关注列表</h1>
+        <h3>关注我的人</h3>
+        <ul>
+            {% if not followers %}
+                <h4>暂时无人关注你....</h4>
+            {% endif %}
+            {% for follower in followers %}
+                <table>
+                    <tr>
+                        <th>头像</th>
+                        <th>昵称</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img class="follow" src="{{ url_for('static', filename=follower.Avatar) }}"
+                                 alt="{{ follower.Username }} Avatar">
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('user_detail',user_id=follower.UserID) }}">{{ follower.Username }}</a>
+                        </td>
+
+                        <td>
+                            {% set mutual_follow = follower in following %}
+
+                            {# 显示相应的按钮 #}
+                            {% if mutual_follow %}
+                                <form action="{{ url_for('unfollow', user_id=user_id, unfollow_id=follower.UserID) }}"
+                                      method="post">
+                                    <button type="submit">相互关注</button>
+                                </form>
+                            {% else %}
+                                <form action="{{ url_for('follow', user_id=user_id, follow_id=follower.UserID) }}"
+                                      method="post">
+                                    <button type="submit" id="addFollowButton">+关注</button>
+                                </form>
+                            {% endif %}
+                        </td>
+
+
+                    </tr>
+                </table>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="right-div">
+        <h2>&nbsp;</h2>
+        <h3>我关注的人</h3>
+        <ul>
+            {% if not following %}
+                <h4>暂无关注的人....</h4>
+            {% endif %}
+            {% for followed in following %}
+                <table>
+                    <tr>
+                        <th>头像</th>
+                        <th>昵称</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img class="follow" src="{{ url_for('static', filename=followed.Avatar) }}"
+                                 alt="{{ followed.Username }} Avatar">
+                        </td>
+                        <td>
+                            <a href="{{ url_for('user_detail', user_id=followed.UserID) }}">{{ followed.Username }}</a>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('unfollow', user_id=user_id, unfollow_id=followed.UserID) }}"
+                                  method="post">
+                                <button type="submit">取消关注</button>
+                            </form>
+                        </td>
+                    </tr>
+
+
+                </table>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社交博客系统</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <style>
+        nav a:hover {
+            background-color: #4fa6ee; /* 鼠标悬停时的背景颜色 */
+        }
+
+        /* 刷新按钮样式 */
+        button.refresh-btn {
+            background-color: #4285f4;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 auto; /* 设置左右外边距为自动，使其居中 */
+            display: block; /* 将按钮转换为块级元素，以撑满父容器的宽度 */
+        }
+
+        .areaSize {
+            margin: 180px;
+            margin-top: 20px; /* 根据需要调整上边距 */
+        }
+
+
+    </style>
+</head>
+<body>
+<header>
+
+    <div class="image-container">
+        <img src="../static/imgs/first_zk1.jpg" id="first_zk" alt="first_zk">
+        <img src="../static/imgs/first_zk2.jpg" id="first_zk" alt="first_zk">
+    </div>
+
+    {#        <span id="header_title">社交博客</span>#}
+    <nav>
+        <img src="../static/imgs/blog.jpg" alt="blog logo" width="70" height="40">
+        <a href="{{ url_for('index') }}">首页</a> |
+        <a href="{{ url_for('hot_blogs') }}">热门博客</a> |
+        <a href="{{ url_for('latest_blogs') }}">最新博客</a> |
+        <a href="{{ url_for('search_results', user_id=user_info.UserID) }}">搜索</a> |
+        <a href="{{ url_for('follow_list', user_id=user_info.UserID) }}">关注列表</a> |
+        <a href="{{ url_for('publish_blog', user_id=user_info.UserID) }}">发布博客</a> |
+
+        <a href="{{ url_for('personal_detail', user_id=user_info.UserID) }}">我的</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </nav>
+
+</header>
+
+<section>
+    <div class="areaSize">
+        <h2>推荐博客文章</h2>
+        {#        <button onclick="refreshPage()">刷新</button>#}
+
+        {% for blog in random_blogs %}
+            <article>
+
+                <a href="/blog/{{ blog.BlogID }}" class="blog_title_a">
+                    <span>{{ blog.Title }}</span>
+                    <span class="LikesCountFont">&nbsp;&nbsp;点赞: {{ blog.LikesCount }}</span>
+                </a>
+                <p>
+                    <span>{{ blog.Content }}</span>
+                </p>
+
+            </article>
+        {% endfor %}
+        <button class="refresh-btn" onclick="refreshPage()">刷新</button>
+    </div>
+
+</section>
+
+<footer>
+    <p>&copy; 仲恺农业工程学院 &nbsp;&nbsp;&nbsp;2023&nbsp;&nbsp;&nbsp; 博客系统.&nbsp;&nbsp;&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+    function refreshPage() {
+        // 强制从服务器加载页面，而不是从缓存中加载
+        location.reload(true);
+
+        // 滚动到页面顶部
+        document.body.scrollTop = 0; // 兼容旧版本浏览器
+        document.documentElement.scrollTop = 0; // 兼容现代浏览器
+    }
+</script>
+
+</body>
+</html>
